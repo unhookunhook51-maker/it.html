@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VORTEX</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #0a0f1e;
+            --card-bg: #111827;
+            --card-bg2: #1a2235;
+            --text-main: #f1f5f9;
+            --text-sec: #94a3b8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --success: #10b981;
+            --border: #1e2d45;
+            --nav-bg: #1e3a8a;
+            --warning: #f59e0b;
+            --accent: #60a5fa;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: linear-gradient(135deg, #0d1b2e 0%, #2563eb22 100%);
+            border-bottom: 1px solid rgba(37,99,235,0.25);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: white;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 17px;
+            letter-spacing: 2px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #93c5fd, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-badge {
+            font-size: 10px;
+            color: var(--text-sec);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 1px;
+        }
+
+        /* ── NAV ── */
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            background: rgba(0,0,0,0.4);
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+
+        .nav-menu::-webkit-scrollbar { height: 3px; }
+        .nav-menu::-webkit-scrollbar-track { background: transparent; }
+        .nav-menu::-webkit-scrollbar-thumb {
+            background: rgba(22,163,74,0.3);
+            border-radius: 2px;
+        }
+
+        .nav-btn {
+            padding: 7px 12px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-sec);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(22,163,74,0.12);
+            color: #bfdbfe;
+            border-color: rgba(22,163,74,0.2);
+        }
+
+        .nav-btn.active {
+            background: rgba(22,163,74,0.18);
+            color: #93c5fd;
+            border-color: rgba(22,163,74,0.4);
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            flex: 1;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── CARDS ── */
+        .card {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .card-header-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(21,128,61,0.1));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+            border: 1px solid rgba(37,99,235,0.25);
+        }
+
+        .card-header-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-sec);
+            text-align: center;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        /* ── FORMS ── */
+        .form-group { margin-bottom: 14px; width: 100%; }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.2s;
+            font-family: inherit;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-main);
+        }
+
+        input::placeholder { color: rgba(148,163,184,0.5); }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+            background: rgba(22,163,74,0.06);
+        }
+
+        /* ── BUTTONS ── */
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(22,163,74,0.35);
+        }
+
+        .btn-secondary {
+            background: rgba(22,163,74,0.1);
+            color: #bfdbfe;
+            border: 1px solid rgba(22,163,74,0.2);
+            margin-top: 8px;
+        }
+        .btn-secondary:hover { background: rgba(22,163,74,0.18); }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #991b1b 100%);
+            color: white;
+        }
+        .btn-danger:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(239,68,68,0.35);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #047857 100%);
+            color: white;
+        }
+        .btn-success:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16,185,129,0.35);
+        }
+
+        .btn-sm {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 11px;
+            border-radius: 8px;
+        }
+
+        /* ── ALERTS ── */
+        .alert {
+            width: 100%;
+            border-radius: 10px;
+            padding: 11px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            border: 1px solid transparent;
+            text-align: left;
+            animation: slideUp 0.25s ease-out;
+            margin-top: 12px;
+        }
+
+        .alert-success {
+            background: rgba(16,185,129,0.12);
+            border-color: rgba(16,185,129,0.3);
+            color: #34d399;
+        }
+        .alert-error {
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.3);
+            color: #f87171;
+        }
+        .alert-info {
+            background: rgba(22,163,74,0.12);
+            border-color: rgba(22,163,74,0.3);
+            color: #93c5fd;
+        }
+        .alert-warning {
+            background: rgba(245,158,11,0.12);
+            border-color: rgba(245,158,11,0.3);
+            color: #fbbf24;
+        }
+
+        .alert-main {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(8px); opacity: 0; }
+            to   { transform: translateY(0);   opacity: 1; }
+        }
+
+        /* ── PROFILE ── */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .avatar-ring {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(22,163,74,0.08);
+            box-shadow: 0 0 20px rgba(22,163,74,0.2);
+            overflow: hidden;
+        }
+
+        .user-avatar {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-avatar-container {
+            width: 52px;
+            height: 52px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(22,163,74,0.4);
+            flex-shrink: 0;
+        }
+
+        .profile-avatar { width: 100%; height: 100%; object-fit: cover; }
+
+        .profile-name {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .profile-id {
+            margin: 2px 0 0 0;
+            font-size: 11px;
+            color: var(--text-sec);
+        }
+
+        .profile-info { flex: 1; }
+
+        .info-table { width: 100%; margin-top: 12px; }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .info-row-label {
+            color: var(--text-sec);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-row-value {
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .robux-highlight {
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .field-label {
+            color: var(--text-sec);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .field-value {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+        }
+
+        /* ── INFO BOX ── */
+        .info-box {
+            background: rgba(22,163,74,0.08);
+            border: 1px solid rgba(22,163,74,0.2);
+            border-radius: 10px;
+            padding: 11px 13px;
+            font-size: 12px;
+            color: var(--text-sec);
+            margin-top: 14px;
+            line-height: 1.6;
+        }
+        .info-box strong { color: var(--primary); }
+
+        /* ── COPY BOX ── */
+        .copy-box {
+            background: rgba(22,163,74,0.08);
+            border: 1px solid rgba(22,163,74,0.2);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .copy-box-text {
+            flex: 1;
+            font-size: 11px;
+            color: var(--text-sec);
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            padding: 6px 11px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+            width: auto;
+        }
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        /* ── AUTH CODE ── */
+        .code-display {
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .code-display-label {
+            color: var(--text-sec);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .code-display-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--success);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 6px;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* ── SEARCH RESULTS ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .info-grid .info-row {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 3px;
+        }
+
+        .profile-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .profile-card-row {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        /* ── BUTTON GROUP ── */
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .button-group button { flex: 1; }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(37,99,235,0.25);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(22,163,74,0.4); }
+
+        /* ── FRIENDS PROGRESS ── */
+        .friends-progress {
+            background: var(--card-bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .friends-progress.active { display: block; }
+
+        .fp-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sec);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .fp-count {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .fp-label {
+            font-size: 11px;
+            color: var(--text-sec);
+        }
+
+        .fp-bar-wrap {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .fp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.4s ease;
+            animation: pulse-bar 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bar {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ── CONTAS TAB ── */
+        .accounts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .accounts-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .accounts-count {
+            font-size: 11px;
+            color: var(--text-sec);
+            background: rgba(22,163,74,0.12);
+            border: 1px solid rgba(22,163,74,0.2);
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .account-item {
+            background: var(--card-bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            transition: all 0.2s;
+        }
+
+        .account-item:hover {
+            border-color: rgba(22,163,74,0.3);
+            background: rgba(22,163,74,0.05);
+        }
+
+        .account-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid rgba(22,163,74,0.3);
+            flex-shrink: 0;
+        }
+
+        .account-info { flex: 1; min-width: 0; }
+
+        .account-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-meta {
+            font-size: 11px;
+            color: var(--text-sec);
+            margin-top: 2px;
+        }
+
+        .account-robux {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .account-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .btn-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 12px;
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .btn-icon-blue {
+            background: rgba(37,99,235,0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(37,99,235,0.25);
+        }
+        .btn-icon-blue:hover { background: rgba(37,99,235,0.28); }
+
+        .btn-icon-red {
+            background: rgba(239,68,68,0.12);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+        .btn-icon-red:hover { background: rgba(239,68,68,0.22); }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-sec);
+        }
+
+        .empty-state-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-state-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            opacity: 0.6;
+        }
+
+        .empty-state-text {
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .accounts-clear-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 9px;
+            background: rgba(239,68,68,0.08);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .accounts-clear-btn:hover { background: rgba(239,68,68,0.16); }
+
+        .logged-in-tag {
+            font-size: 9px;
+            background: rgba(22,163,74,0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(22,163,74,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo"><i class="fas fa-bolt"></i></div>
+            <div>
+                <h2>VORTEX</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-menu">
+        <button class="nav-btn active" data-tab="login">
+            <i class="fas fa-key"></i> Cookie Login
+        </button>
+        <button class="nav-btn" data-tab="accounts">
+            <i class="fas fa-users"></i> Contas
+        </button>
+        <button class="nav-btn" data-tab="access">
+            <i class="fas fa-copy"></i> Cookie Access
+        </button>
+        <button class="nav-btn" data-tab="friends">
+            <i class="fas fa-user-slash"></i> Amizades
+        </button>
+        <button class="nav-btn" data-tab="search">
+            <i class="fas fa-search"></i> Search
+        </button>
+        <button class="nav-btn" data-tab="auth">
+            <i class="fas fa-shield-alt"></i> Auth
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="content-wrapper">
+
+            <!-- ── LOGIN TAB ── -->
+            <div id="loginTab" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h3 class="card-header-title">Cookie Login</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Insira seu cookie .ROBLOSECURITY para entrar na conta.
+                    </p>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="cookie">Cookie</label>
+                            <input type="text" id="cookie" placeholder="Cole seu cookie aqui" required />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </button>
+                    </form>
+
+                    <div id="login-alert"></div>
+                </div>
+
+                <div id="profileView" style="display: none;">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="avatar-ring">
+                                <img id="userAvatar" src="" alt="Avatar" class="user-avatar" />
+                            </div>
+                            <div>
+                                <div class="field-label">Usuário</div>
+                                <div class="field-value" id="userName" style="font-size:16px; font-weight:800;"></div>
+                            </div>
+                        </div>
+
+                        <div class="info-table">
+                            <div class="info-row">
+                                <span class="info-row-label">ID do Usuário</span>
+                                <span class="info-row-value" id="userId"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-row-label">Data de Criação</span>
+                                <span class="info-row-value" id="userCreated"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-row-label">Dias desde criação</span>
+                                <span class="info-row-value" id="daysSince"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-row-label">Robux</span>
+                                <span class="info-row-value robux-highlight" id="userRobux">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="backBtn" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── CONTAS TAB ── -->
+            <div id="accountsTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="card-header-title">Contas Salvas</h3>
+                    </div>
+                    <p class="card-subtitle">
+                        Contas que você acessou via Cookie Login ficam registradas aqui.
+                    </p>
+
+                    <div class="accounts-header">
+                        <span class="accounts-title">Histórico</span>
+                        <span class="accounts-count" id="accountsCountBadge">0 contas</span>
+                    </div>
+
+                    <div class="accounts-list" id="accountsList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon"><i class="fas fa-user-circle"></i></div>
+                            <div class="empty-state-title">Nenhuma conta salva</div>
+                            <div class="empty-state-text">Faça login com um cookie para registrar uma conta aqui.</div>
+                        </div>
+                    </div>
+
+                    <button class="accounts-clear-btn" id="clearAccountsBtn" style="display:none;">
+                        <i class="fas fa-trash"></i> Limpar todo o histórico
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── ACCESS TAB ── -->
+            <div id="accessTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                        <h3 class="card-header-title">Cookie Access</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Copie o cookie da sua sessão ativa atual.
+                    </p>
+
+                    <form id="accessForm">
+                        <div class="form-group">
+                            <label for="accessCookie">Cookie da sessão atual</label>
+                            <input type="password" id="accessCookie" placeholder="••••••••••••••••" readonly />
+                        </div>
+
+                        <button type="button" class="btn-success" id="getCookieBtn">
+                            <i class="fas fa-eye"></i> Mostrar Cookie
+                        </button>
+                    </form>
+
+                    <div id="access-alert"></div>
+                </div>
+            </div>
+
+            <!-- ── FRIENDS TAB ── -->
+            <div id="friendsTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-user-slash"></i>
+                        </div>
+                        <h3 class="card-header-title">Remover Amizades</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Remove <strong>todos</strong> os amigos da conta até a lista zerar completamente.
+                    </p>
+
+                    <div class="info-box">
+                        <strong>⚠️ Atenção:</strong> Esta ação removerá <strong>todos</strong> os amigos em loop até a lista ficar vazia. Esta ação é irreversível.
+                    </div>
+
+                    <form id="friendsForm" style="margin-top: 16px;">
+                        <div class="form-group">
+                            <label for="friendsCookie">Cookie</label>
+                            <input type="password" id="friendsCookie" placeholder="Cole seu cookie aqui" required />
+                        </div>
+
+                        <button type="submit" class="btn-danger" id="friendsSubmitBtn">
+                            <i class="fas fa-trash"></i> Remover Todos os Amigos
+                        </button>
+                    </form>
+
+                    <div class="friends-progress" id="friendsProgress">
+                        <div class="fp-title">Progresso da remoção</div>
+                        <div class="fp-count" id="fpCount">0</div>
+                        <div class="fp-label" id="fpLabel">amigos removidos</div>
+                        <div class="fp-bar-wrap">
+                            <div class="fp-bar" id="fpBar"></div>
+                        </div>
+                    </div>
+
+                    <div id="friends-alert"></div>
+                </div>
+            </div>
+
+            <!-- ── SEARCH TAB ── -->
+            <div id="searchTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="card-header-title">Search User</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Busque informações de qualquer usuário do Roblox.
+                    </p>
+
+                    <div id="searchFormContainer">
+                        <form id="searchForm">
+                            <div class="form-group">
+                                <label for="searchUsernameInput">Nome de Usuário</label>
+                                <input type="text" id="searchUsernameInput" placeholder="Ex: Roblox" required>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-search"></i> Buscar Usuário
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="search-alert"></div>
+
+                    <div id="searchResult" style="display: none; margin-top: 10px;">
+                        <button id="searchBackBtn" class="btn-secondary btn-sm" style="margin-bottom: 14px;">
+                            <i class="fas fa-arrow-left"></i> Nova Busca
+                        </button>
+                        <div class="profile-layout">
+                            <div class="profile-card profile-card-row">
+                                <div class="profile-avatar-container">
+                                    <img id="searchAvatar" src="" alt="Avatar" class="profile-avatar">
+                                </div>
+                                <div class="profile-info">
+                                    <h3 id="searchDisplayName" class="profile-name"></h3>
+                                    <p id="searchUsername" class="profile-id"></p>
+                                </div>
+                            </div>
+
+                            <div class="info-grid">
+                                <div class="info-row">
+                                    <span class="info-row-label">ID</span>
+                                    <span class="info-row-value" id="resId"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label">Criação</span>
+                                    <span class="info-row-value" id="resCreated"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label">Tempo de conta</span>
+                                    <span class="info-row-value" id="resTimeSince" style="font-size: 10px;"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label">Amigos</span>
+                                    <span class="info-row-value" id="resFriends">0</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label">Seguidores</span>
+                                    <span class="info-row-value" id="resFollowers">0</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-row-label">Seguindo</span>
+                                    <span class="info-row-value" id="resFollowing">0</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 8px;">
+                                <label>Descrição</label>
+                                <div id="resDescription" style="font-size: 12px; color: var(--text-sec); background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; max-height: 70px; overflow-y: auto; word-break: break-word; border: 1px solid var(--border);"></div>
+                            </div>
+
+                            <button id="downloadPdfBtn" class="btn-success" style="margin-top: 12px;">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── AUTH TAB ── -->
+            <div id="authTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="card-header-title">Auth Authenticator</h3>
+                    </div>
+
+                    <p class="card-subtitle">
+                        Insira seu código autenticador para gerar um novo código 2FA.
+                    </p>
+
+                    <form id="authForm">
+                        <div class="form-group">
+                            <label for="authSecret">Código Authenticator (Secret)</label>
+                            <input type="text" id="authSecret" placeholder="Cole seu secret aqui" required />
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-sync-alt"></i> Gerar Código
+                        </button>
+                    </form>
+
+                    <div id="authCode" class="code-display" style="display: none;">
+                        <div class="code-display-label">Código 2FA Gerado</div>
+                        <div class="code-display-value" id="codeValue">000000</div>
+                        <div class="progress-container">
+                            <div id="authProgress" class="progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <div id="auth-alert"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
