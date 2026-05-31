@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Vortex",
+  "version": "1.0",
+  "description": "Ferramenta mais complexa do beaming: Cookie Login, Contas Salvas, Cookie Access, Remover Friends, Search e Auth Authenticator. Para melhor uso dos Beams :3",
+  "permissions": [
+    "cookies",
+    "storage",
+    "tabs",
+    "activeTab",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.roblox.com/*"
+  ],
+  "action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
